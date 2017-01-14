@@ -389,22 +389,22 @@ export default class BaseResource {
       const currentResource = `${this.resourceSlug}_id`;
       const targetResource = `${fieldSchema.target}_id`;
 
-      if (_.has(refPermissions, currentResource)) {
+      if (refPermissions.has(currentResource)) {
         // The current resource is being filtered by some ids.
 
         // Permissions for this resource?
-        if (_.includes(refPermissions[currentResource], resourceId)) {
+        if (refPermissions.get(currentResource).includes(resourceId)) {
           return {
             edit: true
           };
         }
         // Else
         return {}; // No permissions
-      } else if (_.has(refPermissions, targetResource)) {
+      } else if (refPermissions.has(targetResource)) {
         // permissions are being filtered by the refPermissions on target resource
         return {
           edit: true,
-          filter: _.get(refPermissions, targetResource)
+          filter: refPermissions.get(targetResource)
         };
       }
 
