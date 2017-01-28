@@ -1,9 +1,6 @@
 import React, { PropTypes } from 'react';
+import { Form } from 'semantic-ui-react';
 import _ from 'lodash';
-// import AutoComplete from 'material-ui/lib/auto-complete';
-// import MenuItem from 'material-ui/lib/menus/menu-item';
-
-import { Chip } from 'components';
 
 export default class Array extends React.Component {
   static propTypes = {
@@ -12,80 +9,56 @@ export default class Array extends React.Component {
     value: PropTypes.array,
     permissions: PropTypes.object,
     options: PropTypes.array,
-    onBlur: PropTypes.func.isRequired
-  };
-  static defaultProps = {
-    title: 'Array'
-  };
+    onChange: PropTypes.func.isRequired
+  }
 
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      value: props.value || []
+    };
   }
 
-  onChange(index) {
-    const { onBlur, value } = this.props;
-
-    if (onBlur) {
-      onBlur(
-        _.filter(value, (x, i) => i !== index)
-      );
-    }
-  }
-
-  addValue({ target }) {
-    const newValue = _.trim(target.textContent);
-    const { onBlur, value } = this.props;
-
-    // FIXME: Never assign like this in react...
-    target.textContent = undefined; // eslint-disable-line
-
-    if (!_.isEmpty(newValue)) {
-      onBlur(
-        _(value || []).concat(newValue).value()
-      );
-    }
-  }
-  deleteValue() {
-    const { onBlur, value } = this.props;
-
-    onBlur(_.slice(value, 0, -1));
-  }
-
-  handleKeyPress(event) {
-    if (event.key === 'Backspace' && _.isEmpty(event.target.textContent)) {
-      this.deleteValue();
-    }
-
-    if (event.key === 'Enter') {
-      this.addValue(event);
+  componentWillReceiveProps(nextProps) {
+    if (!_.isEqual(nextProps.value, this.state.value)) {
+      console.log('Updating state:', this.state.value, '->', nextProps.value);
+      this.setState({
+        value: nextProps.value || []
+      });
     }
   }
 
   render() {
-    const { title, value } = this.props;
-    // Shows an array of strings for now.
-    // Get the react internal id to create the id.
+    const { title, onChange } = this.props;
+    const { value, currentValue } = this.state;
+    const toItem = (item) => ({ value: item, text: item });
+
+    const options = value
+                        .concat(currentValue && !value.includes(currentValue)
+                         ? [currentValue]
+                         : []
+                        )
+                        .map(toItem);
+    // const values = value.map(toItem);
+
+    console.log('Array:', options, value);
+
     return (
-      <div className="chip-list" onClick={() => this._input && this._input.focus()}>
-        <div>
-        { _.map(value || [], (item, i) => (
-          <Chip key={i}>
-            {item}
-            <i className="material-icons"
-              onClick={() => this.onChange(i)}
-            >cancel</i>
-          </Chip>
-        ))}
-          <p ref={(el) => {this._input = el;}}
-            contentEditable="true"
-            onBlur={(event) => this.addValue(event)}
-            onKeyPress={(event) => this.handleKeyPress(event)}
-            onKeyDown={(event) => this.handleKeyPress(event)}
-          />
-        </div><label className="chip-list--label">{title}</label>
-      </div>
+      <Form.Dropdown fluid multiple search selection selectOnBlur
+        noResultsMessage="Typ om nieuwe items te maken"
+        label={title}
+        value={value}
+        options={options}
+        onBlur={() => onChange(value)}
+        onChange={(ev, data) => this.setState({
+          value: data.value,
+          currentValue: undefined
+        })}
+        onSearchChange={(ev, data) => this.setState({
+          currentValue: data
+        })}
+      />
     );
   }
 }

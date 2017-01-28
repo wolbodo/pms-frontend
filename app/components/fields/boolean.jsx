@@ -1,31 +1,24 @@
 import React, { PropTypes } from 'react';
-import * as mdl from 'react-mdl';
 
+import { Form } from 'semantic-ui-react';
 
-export default class Boolean extends React.Component {
-  static propTypes = {
-    title: PropTypes.string,
-    value: PropTypes.bool,
-    permissions: PropTypes.object,
-    onBlur: PropTypes.func.isRequired,
-    onChange: PropTypes.func.isRequired
-  };
-  static defaultProps = {
-    title: 'Boolean'
-  };
+const Boolean = ({ title, value, className, onChange }) => (
+  <Form.Checkbox toggle
+    label={title}
+    checked={value}
+    className={className}
+    onChange={(ev, data) => onChange(data.checked)}
+  />
+);
+Boolean.propTypes = {
+  title: PropTypes.string,
+  value: PropTypes.bool,
+  className: PropTypes.string,
+  permissions: PropTypes.object,
+  onChange: PropTypes.func.isRequired
+};
+Boolean.defaultProps = {
+  title: 'Boolean'
+};
 
-  render() {
-    const { title, value, permissions,
-        onChange, onBlur } = this.props;
-
-    return (
-      <mdl.Checkbox
-        checked={!!value || false}
-        label={title}
-        disabled={!permissions.edit}
-        onBlur={(event) => onBlur(event.target.checked)}
-        onChange={(event) => onChange(event.target.checked)}
-      />
-    );
-  }
-}
+export default Boolean;

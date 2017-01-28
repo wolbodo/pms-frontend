@@ -13,11 +13,10 @@ export default class PeopleResource extends BaseResource {
   }
 
   filterByRole(role) {
+    // _.map(role.members(), ({ $ref }) =>
     return role ?
-      _.filter(
-        this.wrap(),
-        (person) => person.get('roles')
-                          .some((_role) => _role.get('$ref') === `/roles/${role.id}`)
-      ) : this.all();
+    _.map(role.members(), ({ $ref }) => $ref.match('^\\/people\\/(\\d+)$')[1])
+     .map((id) => this.get(id))
+      : this.all();
   }
 }

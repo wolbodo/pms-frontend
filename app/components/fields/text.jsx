@@ -1,39 +1,64 @@
 import React, { PropTypes } from 'react';
-import * as mdl from 'react-mdl';
-
+import { Form, Input } from 'semantic-ui-react';
+import _ from 'lodash';
 
 export default class Text extends React.Component {
-
   static propTypes = {
-    name: PropTypes.string,
+    // name: PropTypes.string,
     title: PropTypes.string,
+    className: PropTypes.string,
     value: PropTypes.string,
     permissions: PropTypes.object,
-    onBlur: PropTypes.func.isRequired,
     onChange: PropTypes.func.isRequired
   };
-  static defaultProps = {
-    title: 'Text'
-  };
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      value: props.value
+    };
+  }
+
+  componentWillReceiveProps(props) {
+    if (!_.isEqual(props.value, this.state.value)) {
+      console.log('2:: ->>', props, this.state);
+      console.log('      |', this.props.value);
+      this.setState({
+        value: props.value
+      });
+    }
+  }
 
   render() {
-    const { name, title, value, permissions,
-        onChange, onBlur } = this.props;
+    const {
+      title, permissions, className, onChange
+    } = this.props;
+    const { value } = this.state;
 
-    return (
-      <div className="textfield">
-        <div className="auto-size">{value || title}</div>
-        <mdl.Textfield
-          className={[`field-${name}`, (value !== undefined) ? 'is-dirty' : ''].join(' ')}
-          label={title}
-          name={name}
-          value={value}
-          disabled={!permissions.edit}
-          onBlur={(event) => onBlur(event.target.value)}
-          onChange={(event) => onChange(event.target.value)}
-          floatingLabel
-        />
-      </div>
+    return permissions.edit ? (
+        <Form.Field className={className}>
+          <label>{title}</label>
+          <Input
+            disabled={!permissions.edit}
+            onChange={(ev, data) => this.setState({ value: data.value })}
+            value={value}
+            fluid
+          >
+            <input
+              onBlur={() => {
+                if (value !== this.props.value) {
+                  onChange(value);
+                }
+              }}
+            />
+          </Input>
+        </Form.Field>
+      ) : (
+      <Form.Field className={className}>
+        <label>{title}</label>
+        <p>{value}</p>
+      </Form.Field>
     );
   }
 }

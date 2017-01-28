@@ -62,7 +62,7 @@ export default class App extends React.Component {
 
           <mdl.Navigation>
             {auth.loggedIn ? [
-              (<Link key="mensen" to="/mensen">Mensen</Link>),
+              (<Link key="mensen" to="/mensen/member">Mensen</Link>),
               (<Link key="wijzig" to="/wijzig">Wijzig gegevens</Link>),
               (<Link key="velden" to="/velden">Velden</Link>),
               (<Link key="groepen" to="/groepen">Groepen</Link>),

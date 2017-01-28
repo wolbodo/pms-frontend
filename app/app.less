@@ -102,9 +102,28 @@ body {
     }
   }
 
+  .fields {
+    .disabled {
+      .secondary-text-color;
+      opacity: 1;
+    }
+    .field {
+      flex: 1;
+    }
 
-  .mdl-textfield label {
-    .secondary-text-color;
+    .field-string {
+      .secondary-text-color;
+
+      input {
+        &::-webkit-input-placeholder,
+        &:-ms-input-placeholder,
+        &::-ms-input-placeholder,
+        &::-moz-placeholder {
+          .secondary-text-color;
+        }
+
+      }
+    }
   }
 
   .click {
@@ -115,12 +134,13 @@ body {
     flex:1;
 
     display: flex;
-    flex-wrap: wrap;
+    flex-flow: column wrap;
     align-content: flex-start;
 
     padding: 0.5rem;
     margin: 0 auto;
     max-width: 1080px;
+    width: 100%;
 
     .mdl-cell {
       padding: 1rem;

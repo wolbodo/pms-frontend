@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
-import * as mdl from 'react-mdl';
-import * as _ from 'lodash';
+// import * as mdl from 'react-mdl';
+import { Form, Card } from 'semantic-ui-react';
+import _ from 'lodash';
 
 import Field from './field';
 
@@ -10,7 +11,6 @@ import Field from './field';
 // Filter all readable nonempty fields, or writable fields
 // _.(readable && filled) || writable
 const mapFilter = (iterable, mapfun, filterfun) => _.filter(_.map(iterable, mapfun), filterfun);
-
 
 export default class ItemEdit extends React.Component {
   static propTypes = {
@@ -45,12 +45,7 @@ export default class ItemEdit extends React.Component {
   render() {
     const { resource, item } = this.props;
 
-    // const permissions = ((type === 'people') && (item.id === auth.user.user)) ?
-    //   _.merge({}, auth.permissions.people.self, auth.permissions.people)
-    //   :
-    //   _.get(auth, ['permissions', type]);
-
-    let form = mapFilter(
+    const form = mapFilter(
       resource.schema.form,
       (formGroup) => ({
         title: formGroup.title,
@@ -64,32 +59,36 @@ export default class ItemEdit extends React.Component {
     );
 
     return (
-      <form className="content">
+      <Form>
+      <Card.Group>
       {_.map(form, (role, i) => (
-        <mdl.Card key={i} className="mdl-color--white mdl-shadow--2dp">
-          <mdl.CardTitle>
-            {role.title}
-          </mdl.CardTitle>
-          <div className="mdl-card__form">
-          {_.map(role.fields, (fieldset, key) => (
-            <div key={key} className="fieldset">
-            {_.map(fieldset, (field, _key) => (
-              <Field
-                key={_key}
-                field={field.schema}
-                resource={field.resource}
-                tabIndex="0"
-                permissions={field.permissions}
-                onChange={(value) => resource.updateItem(item.id, value, field.schema.name)}
-                value={field.value}
-              />
+        <Card key={i}>
+          <Card.Content>
+            <Card.Header>
+              {role.title}
+            </Card.Header>
+            <Card.Description>
+            {_.map(role.fields, (fieldset, key) => (
+              <Form.Group key={key}>
+              {_.map(fieldset, (field, _key) => (
+                <Field
+                  key={_key}
+                  field={field.schema}
+                  resource={field.resource}
+                  tabIndex="0"
+                  permissions={field.permissions}
+                  onChange={(value) => resource.updateItem(item.id, value, field.schema.name)}
+                  value={field.value}
+                />
+              ))}
+              </Form.Group>
             ))}
-            </div>
-          ))}
-          </div>
-        </mdl.Card>
+            </Card.Description>
+          </Card.Content>
+        </Card>
       ))}
-      </form>
+      </Card.Group>
+      </Form>
     );
   }
 }

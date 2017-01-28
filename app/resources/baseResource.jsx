@@ -37,11 +37,11 @@ class Reference {
 
   setDescription(resource, description) {
     // sets a description for a resource.
-    console.log(':: setDescription', resource, description);
+    // console.log(':: setDescription', resource, description);
     this.descriptions[resource.resourceSlug] = description;
 
     if (!_.eq(this.resources[resource.resourceSlug], resource)) {
-      console.log('-> Description changed');
+      // console.log('-> Description changed');
       this.resources[resource.resourceSlug] = resource;
     }
   }
@@ -93,7 +93,7 @@ class Reference {
   }
 
   generateField(fieldName, itemId, currentValue) {
-    // console.log(fieldName, itemId, currentValue);
+    console.log(fieldName, itemId, currentValue);
     const resourceName = _.findKey(this.descriptions, _.matches({ key: fieldName }));
     const itemUpdates = this.resources[resourceName]._updates
                         .getIn([itemId.toString(), fieldName]);
@@ -128,7 +128,7 @@ class Reference {
   }
 
   update(itemId, value, key) {
-    console.log(':: update', itemId, value, key);
+    // console.log(':: update', itemId, value, key);
     const resourceName = _.findKey(this.descriptions, (desc) => desc.key === key);
     const description = this.descriptions[resourceName];
     const targetDescription = this.descriptions[description.target];
@@ -430,6 +430,7 @@ export default class BaseResource {
   updateItem(itemId, value, key) {
     // Sets key/value on item.
     const item = this.get(itemId);
+    console.log('updateing item:', item, value, key);
 
     // When the key is a referencedResource, update it trough the reference;
     if (_.has(this._references, key)) {
@@ -447,17 +448,6 @@ export default class BaseResource {
    * Component renderers
    */
   renderItemEdit(item) {
-    // const permissions = (parseInt(personId, 10) === auth.user.user)
-    //   ? _.merge({}, auth.permissions.people.self, auth.permissions.people)
-    //   : auth.permissions.people;
-
-    // // Generate references from updates in resources.
-    // // This is needed due to ref updates (trough the references field)
-    // // not creating the reverse ref. This function generates those
-    // const reverseRefs = schemaUtil.generateReverseRefs('people', person, resources, fields);
-
-    // console.log(reverseRefs);
-
     return (
       <ItemEdit
         resource={this}

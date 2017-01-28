@@ -1,55 +1,28 @@
 import React, { PropTypes } from 'react';
+import { Form } from 'semantic-ui-react';
 
-import * as mdl from 'react-mdl';
-// import { DatePicker } from 'material-ui';
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
 
-export default class Date extends React.Component {
-  static propTypes = {
-    title: PropTypes.string,
-    value: PropTypes.string,
-    permissions: PropTypes.object,
-    onBlur: PropTypes.func.isRequired,
-    onChange: PropTypes.func.isRequired
-  };
-  static defaultProps = {
-    title: 'Date'
-  };
+import 'react-datepicker/dist/react-datepicker.css';
 
-  // TODO: OnChange, and properly showing dates
-  render() {
-    const { value, title, permissions, onChange, onBlur } = this.props;
+const DateField = ({ title, value, onChange }) => (
+  <Form.Field
+    label={title}
+    control={DatePicker}
+    selected={moment(value)}
+    onChange={(date) => onChange(date.toDate())}
+  />
+);
+DateField.propTypes = {
+  title: PropTypes.string,
+  value: PropTypes.string,
+  permissions: PropTypes.object,
+  className: PropTypes.string,
+  onChange: PropTypes.func.isRequired
+};
+DateField.defaultProps = {
+  title: 'Date'
+};
 
-    // return (
-    //   <DatePicker
-    //     className="datepicker"
-    //     container="dialog"
-    //     autoOk
-    //     disabled={disabled}
-    //     floatingLabelText={title}
-    //     open={!disabled}
-    //     style={{
-    //       width: '125px'
-    //     }}
-    //     textFieldStyle={{
-    //       width: '125px'
-    //     }}
-    //   />
-    // );
-
-    return (
-      <div className="textfield">
-        <div className="auto-size">{value || title}</div>
-        <mdl.Textfield
-          className={[`field-${name}`, (value !== undefined) ? 'is-dirty' : ''].join(' ')}
-          label={title}
-          name={name}
-          value={value}
-          disabled={!permissions.edit}
-          onBlur={(event) => onBlur(event.target.value)}
-          onChange={(event) => onChange(event.target.value)}
-          floatingLabel
-        />
-      </div>
-    );
-  }
-}
+export default DateField;
