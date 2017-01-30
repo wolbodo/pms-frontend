@@ -24,20 +24,25 @@
     margin-top: 4em;
   }
 
-
-  // Configure Disabled fields
-  .ui.form .field.disabled {
-    label {
-      opacity: 1;
-    }
-
-    &.field-option {
-      opacity: 1;
-      .dropdown {
-        border: none;
+  .ui.cards {
+    align-items: flex-start;
+  }
+  .ui.form .field {
+    // Configure Disabled fields
+    flex: 1;
+    &.disabled {
+      label {
+        opacity: 1;
       }
-      .dropdown.icon {
-        display: none;
+
+      &.field-option {
+        opacity: 1;
+        .dropdown {
+          border: none;
+        }
+        .dropdown.icon {
+          display: none;
+        }
       }
     }
   }
