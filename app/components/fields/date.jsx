@@ -11,7 +11,10 @@ const DateField = ({ title, value, onChange }) => (
     label={title}
     control={DatePicker}
     selected={moment(value)}
-    onChange={(date) => onChange(date.toDate())}
+    onChange={(date) => {
+      console.log('changing date', date);
+      onChange(date.toDate());
+    }}
   />
 );
 DateField.propTypes = {

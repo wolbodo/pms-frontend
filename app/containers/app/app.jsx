@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import * as mdl from 'react-mdl';
-import { Link } from 'react-router';
-
+// import * as mdl from 'react-mdl';
+// import { Link } from 'react-router';
+import { Menu, Container } from 'semantic-ui-react';
 // Action imports
 import { push } from 'react-router-redux';
 
@@ -46,39 +46,60 @@ export default class App extends React.Component {
   }
 
   render() {
-    const { main, header, auth } = this.props;
-
+    const { pushState, main, auth } = this.props;
+    // const { main, header, auth } = this.props;
+    // debugger;
     return (
-      <mdl.Layout fixedHeader fixedDrawer>
-        <mdl.Header >
-          <mdl.HeaderRow>
-            {header}
-          </mdl.HeaderRow>
-        </mdl.Header>
-        <mdl.Drawer>
-          <header>
-            <img src={logo} />
-          </header>
-
-          <mdl.Navigation>
-            {auth.loggedIn ? [
-              (<Link key="mensen" to="/mensen/member">Mensen</Link>),
-              (<Link key="wijzig" to="/wijzig">Wijzig gegevens</Link>),
-              (<Link key="velden" to="/velden">Velden</Link>),
-              (<Link key="groepen" to="/groepen">Groepen</Link>),
-              (<Link key="permissies" to="/permissies">Permissies</Link>),
-              (<Link key="logout" to="/logout">Log uit</Link>)
-            ] : (
-              <Link to="/login">Log in</Link>
-            )}
-          </mdl.Navigation>
-        </mdl.Drawer>
-        <mdl.Content className="mdl-color--grey-100">
+      <div className="app">
+        { auth.loggedIn && (
+          <Menu inverted>
+            {[
+              { key: 'mensen', path: '/mensen/member', name: 'Mensen' },
+              { key: 'wijzig', path: '/wijzig', name: 'Wijzig gegevens' },
+              { key: 'velden', path: '/velden', name: 'Velden' },
+              { key: 'groepen', path: '/groepen', name: 'Groepen' },
+              { key: 'permissies', path: '/permissies', name: 'Permissies' },
+              { key: 'logout', path: '/logout', name: 'Log uit', position: 'right' },
+            ].map((item) => (
+              <Menu.Item onClick={() => pushState(item.path)} {...item} />
+            ))}
+          </Menu>
+        )}
+        <Container>
           {main}
-        </mdl.Content>
-      </mdl.Layout>
-
+        </Container>
+      </div>
     );
+    // return (
+    //   <mdl.Layout fixedHeader fixedDrawer>
+    //     <mdl.Header >
+    //       <mdl.HeaderRow>
+    //         {header}
+    //       </mdl.HeaderRow>
+    //     </mdl.Header>
+    //     <mdl.Drawer>
+    //       <header>
+    //         <img src={logo} />
+    //       </header>
+
+    //       <mdl.Navigation>
+    //         {auth.loggedIn ? [
+    //           (<Link key="mensen" to="/mensen/member">Mensen</Link>),
+    //           (<Link key="wijzig" to="/wijzig">Wijzig gegevens</Link>),
+    //           (<Link key="velden" to="/velden">Velden</Link>),
+    //           (<Link key="groepen" to="/groepen">Groepen</Link>),
+    //           (<Link key="permissies" to="/permissies">Permissies</Link>),
+    //           (<Link key="logout" to="/logout">Log uit</Link>)
+    //         ] : (
+    //           <Link to="/login">Log in</Link>
+    //         )}
+    //       </mdl.Navigation>
+    //     </mdl.Drawer>
+    //     <mdl.Content className="mdl-color--grey-100">
+    //       {main}
+    //     </mdl.Content>
+    //   </mdl.Layout>
+    // );
   }
 }
 

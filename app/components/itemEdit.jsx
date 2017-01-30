@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-// import * as mdl from 'react-mdl';
 import { Form, Card } from 'semantic-ui-react';
 import _ from 'lodash';
 
