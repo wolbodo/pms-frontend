@@ -31,8 +31,6 @@ export default class Login extends React.Component {
 
   handleSubmit(event, { formData: { email, password } }) {
     event.preventDefault();
-    debugger;
-
     this.props.login(email, password);
   }
 

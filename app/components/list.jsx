@@ -1,9 +1,7 @@
 import React, { PropTypes } from 'react';
-import * as mdl from 'react-mdl';
-
 import { Link } from 'react-router';
-
 import _ from 'lodash';
+import { Table } from 'semantic-ui-react';
 
 export function List({ title, buttons, children }) {
   const { heads, rows } = _.groupBy(
@@ -12,24 +10,14 @@ export function List({ title, buttons, children }) {
   );
 
   return (
-    <mdl.Card className="content mdl-color--white mdl-shadow--2dp">
-      <mdl.CardMenu>
-        {buttons}
-      </mdl.CardMenu>
-      <mdl.CardTitle>
-        {title || 'Lijst'}
-      </mdl.CardTitle>
-      <mdl.CardText>
-        <table className="mdl-data-table mdl-js-data-table">
-          <thead>
-            {heads}
-          </thead>
-          <tbody>
-            {rows}
-          </tbody>
-        </table>
-      </mdl.CardText>
-    </mdl.Card>
+    <div>
+      {buttons}
+      <h2>{title || 'Lijst'}</h2>
+      <Table>
+        <Table.Header>{heads}</Table.Header>
+        <Table.Body>{rows}</Table.Body>
+      </Table>
+    </div>
   );
 }
 List.propTypes = {
@@ -40,19 +28,19 @@ List.propTypes = {
 
 export function Head({ schema, fieldLink }) {
   return (
-    <tr>
-      {schema.header
-        .map((fieldname) => schema.properties[fieldname]) // get fields from the fieldname
-        .map((field) => (
-        <th key={field.id} className="mdl-data-table__cell--non-numeric">
-        {
-          fieldLink ? (
-            <Link to={`${fieldLink}/${field.name}`}>{field.title}</Link>
-          ) : field.title
-        }
-        </th>
-      ))}
-    </tr>
+    <Table.Row>
+    {schema.header
+      .map((fieldname) => schema.properties[fieldname]) // get fields from the fieldname
+      .map((field) => (
+      <Table.HeaderCell key={field.id}>
+      {
+        fieldLink ? (
+          <Link to={`${fieldLink}/${field.name}`}>{field.title}</Link>
+        ) : field.title
+      }
+      </Table.HeaderCell>
+    ))}
+    </Table.Row>
   );
 }
 Head.propTypes = {
@@ -62,13 +50,13 @@ Head.propTypes = {
 
 export function Row({ className, item, fields, edit }) {
   return (
-    <tr className={className} key={item.name} onClick={edit}>
+    <Table.Row className={className} key={item.name} onClick={edit}>
       {fields.map((field, i) => (
-        <td key={i} className="mdl-data-table__cell--non-numeric">
+        <Table.Cell key={i}>
           { item[field] }
-        </td>
+        </Table.Cell>
       ))}
-    </tr>
+    </Table.Row>
   );
 }
 Row.propTypes = {

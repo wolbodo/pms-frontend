@@ -52,7 +52,7 @@ export default class App extends React.Component {
     return (
       <div className="app">
         { auth.loggedIn && (
-          <Menu inverted>
+          <Menu inverted fixed="top">
             {[
               { key: 'mensen', path: '/mensen/member', name: 'Mensen' },
               { key: 'wijzig', path: '/wijzig', name: 'Wijzig gegevens' },
