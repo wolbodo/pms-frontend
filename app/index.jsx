@@ -10,9 +10,7 @@ import configureStore from 'redux/configureStore';
 
 // Reference static files so they are loaded with webpack.;
 import 'file?name=[name].[ext]!../index.html';
-import 'material.css';
 import 'app.less';
-import 'material';
 import 'favicon.png';
 
 
