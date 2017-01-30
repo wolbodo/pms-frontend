@@ -8,7 +8,6 @@ import {
   fields,
   permissions,
   Login,
-  PasswordReset,
   App,
   HeaderBar
 } from 'containers';
@@ -19,7 +18,6 @@ import clearState from 'redux/modules/clearState';
 import * as peopleActions from 'redux/modules/people';
 import * as rolesActions from 'redux/modules/roles';
 import * as fieldsActions from 'redux/modules/fields';
-
 
 // Create a mapping for resourcetypes...
 const actions = {
@@ -70,31 +68,26 @@ export default (store) => (
     component={App}
     onEnter={fetchResources(store, 'people', 'roles', 'fields')}
   >
-    <IndexRoute
-      name="Lijst"
+    <IndexRoute name="Lijst"
       components={{ main: people.View, header: HeaderBar }}
       onEnter={requireLogin(store)}
     />
-    <Route
-      name="Mensen"
+    <Route name="Mensen"
       path="mensen(/:role_name)"
       components={{ main: people.View, header: HeaderBar }}
       onEnter={requireLogin(store)}
     />
-    <Route
-      name="Lid"
+    <Route name="Lid"
       path="lid-:id"
       components={{ main: people.Edit, header: HeaderBar }}
       onEnter={requireLogin(store)}
     />
-    <Route
-      name="Wijzig"
+    <Route name="Wijzig"
       path="wijzig"
       components={{ main: people.Edit, header: HeaderBar }}
       onEnter={requireLogin(store)}
     />
-    <Route
-      name="Velden"
+    <Route name="Velden"
       path="/velden"
       components={{ main: fields.Overview, header: HeaderBar }}
       onEnter={requireLogin(store)}
@@ -112,38 +105,36 @@ export default (store) => (
         onEnter={requireLogin(store)}
       />
     </Route>
-    <Route
-      name="Groepen"
+    <Route name="Groepen"
       path="groepen"
       components={{ main: roles.View, header: HeaderBar }}
       onEnter={requireLogin(store)}
     />
-    <Route
-      name="Groep"
+    <Route name="Groep"
       path="groepen/:groep"
       components={{ main: roles.Edit, header: HeaderBar }}
       onEnter={requireLogin(store)}
     />
-    <Route
-      name="Permissies"
+    <Route name="Permissies"
       path="permissies"
       components={{ main: permissions.View, header: HeaderBar }}
       onEnter={fetchResources(store, 'people', 'roles', 'fields', 'permissions')}
     />
-    <Route
-      name="Login"
+    <Route name="Login"
       path="login"
       components={{ main: Login }}
     />
-    <Route
-      name="Logout"
+    <Route name="password_forgot"
+      path="password_forgot"
+      components={{ main: Login.Forgot }}
+    />
+    <Route name="Logout"
       path="logout"
       onEnter={logout(store)}
     />
-    <Route
-      name="Password reset"
+    <Route name="Password reset"
       path="password_reset/:token"
-      components={{ main: PasswordReset }}
+      components={{ main: Login.Reset }}
     />
   </Route>
 );

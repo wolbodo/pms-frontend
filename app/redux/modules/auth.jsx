@@ -69,9 +69,11 @@ const reducers = {
   [START]: (auth) =>
     auth.merge({
       loggedIn: false,
-      fetching: true
+      fetching: true,
+      error: undefined,
+      success: undefined,
     }),
-  [SUCCESS]: (auth, { data: { token, permissions } }) => {
+  [SUCCESS]: (auth, { data: { token, permissions, success } }) => {
     // get the userinfo from the token.
     const user = JSON.parse(
       atob(
@@ -84,49 +86,69 @@ const reducers = {
 
     return auth.merge({
       loggedIn: true,
-      error: undefined,
       fetching: false,
       token,
       permissions,
-      user
+      user,
+      error: undefined,
+      success: {
+        login: success,
+      },
     });
   },
   [FAIL]: (auth, { error: { error } }) =>
     auth.merge({
       fetching: false,
-      error
+      error: {
+        login: error
+      },
+      success: undefined,
     }),
 
   [FORGOT_START]: (auth) =>
     auth.merge({
-      fetching: true
+      fetching: true,
+      error: undefined,
+      success: undefined,
     }),
   [FORGOT_SUCCESS]: (auth, { data: { success } }) =>
     auth.merge({
       fetching: false,
       error: undefined,
-      success
+      success: {
+        forgot: success,
+      },
     }),
   [FORGOT_FAIL]: (auth, { error: { error } }) =>
     auth.merge({
       fetching: false,
-      error
+      error: {
+        forgot: error
+      },
+      success: undefined,
     }),
 
   [RESET_START]: (auth) =>
     auth.merge({
-      fetching: true
+      fetching: true,
+      error: undefined,
+      success: undefined,
     }),
   [RESET_SUCCESS]: (auth, { data: { success } }) =>
     auth.merge({
       fetching: false,
       error: undefined,
-      success,
+      success: {
+        reset: success,
+      },
     }),
   [RESET_FAIL]: (auth, { error: { error } }) =>
     auth.merge({
       fetching: false,
-      error
+      error: {
+        reset: error
+      },
+      success: undefined,
     }),
 
   [CLEAR]: () => initialState

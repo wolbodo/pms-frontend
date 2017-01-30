@@ -49,9 +49,10 @@ export default class PeopleView extends React.Component {
 
     // Create a select title ;)
     const title = (
-      <fieldComponents.Enum
+      <fieldComponents.Option
         value={_.get(currentRole, 'name', 'all')}
         permissions={{ edit: true }}
+        title=""
         options={
           roles._items
                .map((role) => role.get('name'))
@@ -59,12 +60,7 @@ export default class PeopleView extends React.Component {
                .flip()
                .map((value, key) => key).toJS()
         }
-        style={{
-          fontSize: '22px',
-          fontWeight: 'bold',
-          lineHeight: '34px'
-        }}
-        onBlur={(param) => pushState(`/mensen/${param}`)}
+        onChange={(param) => pushState(`/mensen/${param}`)}
       />
     );
 
@@ -73,7 +69,6 @@ export default class PeopleView extends React.Component {
         <Head schema={people.schema} editLink />
         {_.map(peopleSet, (person) => (
           <Row
-            className="click"
             key={person.id}
             item={person}
             fields={people.schema.header}

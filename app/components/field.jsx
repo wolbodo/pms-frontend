@@ -21,7 +21,7 @@ export default class Field extends React.Component {
   static FieldTypeMap = {
     string: fields.Text,
     option: fields.Option,
-    enum: fields.Enum,
+    // enum: fields.Enum,
     boolean: fields.Boolean,
     array: fields.Array,
     date: fields.Date,

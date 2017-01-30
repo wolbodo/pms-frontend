@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Grid, Form, Segment, Message } from 'semantic-ui-react';
-
+import { Link } from 'react-router';
+import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 import * as authActions from 'redux/modules/auth';
 
@@ -9,12 +10,11 @@ import './login.less';
 @connect(
   (state) => ({
     people: state.get('people').toJS(),
-    auth: state.get('auth').toJS()
+    auth: state.get('auth').toJS(),
   }), {
     login: authActions.login,
-    passwordForgot: authActions.passwordForgot
   })
-export default class Login extends React.Component {
+class Login extends React.Component {
   static propTypes = {
     login: PropTypes.func,
     passwordForgot: PropTypes.func,
@@ -59,44 +59,89 @@ export default class Login extends React.Component {
               <Form.Button content="login" fluid />
             </Segment>
           </Form>
-          {error && <Message error content={error} />}
-          {success && <Message success content={success} />}
+          {error && error.login && <Message error content={error.login} />}
+          {success && <Message success content={success.login || success.reset} />}
+          <Message>
+            Forgot your password? <Link to="/password_forgot">Click here.</Link>
+          </Message>
         </Grid.Column>
       </Grid>
     );
-
-    // return (
-    //   <form className="content" onSubmit={this.handleSubmit}>
-    //     <mdl.Card className="login mdl-color--white mdl-shadow--2dp">
-    //       <mdl.CardTitle>Log in!</mdl.CardTitle>
-    //       <div className="mdl-card__form">
-    //         <mdl.Textfield
-    //           label="Email"
-    //           onChange={({ target }) => this.onChange('email', target.value)}
-    //           pattern=".+@.+"
-    //           error="Input is not an emailaddress!"
-    //           floatingLabel
-    //         />
-    //         <mdl.Textfield
-    //           label="Wachtwoord"
-    //           type="password"
-    //           onChange={({ target }) => this.onChange('password', target.value)}
-    //           floatingLabel
-    //         />
-    //         <mdl.Button primary raised>Log in</mdl.Button>
-    //         {success
-    //           ? (<p className="success">{success}</p>)
-    //           : (error && (<p className="error">{error}</p>))
-    //         }
-    //         <a href=""
-    //           onClick={(ev) => {
-    //             ev.preventDefault();
-    //             this.props.passwordForgot(this.state.email);
-    //           }}
-    //         >Wachtwoord vergeten?</a>
-    //       </div>
-    //   </mdl.Card>
-    //   </form>
-    // );
   }
 }
+
+const Forgot = connect((state) => ({
+  auth: state.get('auth').toJS()
+}), {
+  passwordForgot: authActions.passwordForgot
+})(({ passwordForgot, auth: { error, success } }) => (
+  <Grid centered className="middle aligned">
+    <Grid.Column>
+      <h2>Reset your password.</h2>
+      <Form onSubmit={(ev, { formData: { email } }) => {
+        ev.preventDefault();
+        passwordForgot(email);
+      }}
+      >
+        <Segment>
+          <Form.Input
+            icon="user"
+            name="email"
+            iconPosition="left"
+            placeholder="Email address"
+            type="email"
+          />
+          <Form.Button content="Reset password" fluid />
+        </Segment>
+      </Form>
+      {error && error.forgot && <Message error content={error.forgot} />}
+      {success && success.forgot && <Message success content={success.forgot} />}
+    </Grid.Column>
+  </Grid>
+));
+
+
+const Reset = connect((state) => ({
+  auth: state.get('auth').toJS()
+}), {
+  pushState: push,
+  passwordReset: authActions.passwordReset,
+})(({
+  passwordReset,
+  pushState,
+  auth: { error, success },
+  params: { token }
+}) => {
+  if (!(error && error.reset) && (success && success.reset)) {
+    pushState('/login');
+  }
+  return (
+    <Grid centered className="middle aligned">
+      <Grid.Column>
+        <h2>Set your new password.</h2>
+        <Form onSubmit={(ev, { formData: { password } }) => {
+          ev.preventDefault();
+          passwordReset(token, password);
+        }}
+        >
+          <Segment>
+            <Form.Input
+              icon="privacy"
+              name="password"
+              iconPosition="left"
+              placeholder="Password"
+              type="password"
+            />
+            <Form.Button content="Set new password" fluid />
+          </Segment>
+        </Form>
+        {error && error.reset && <Message error content={error.reset} />}
+        {success && success.reset && <Message success content={success.reset} />}
+      </Grid.Column>
+    </Grid>
+  );
+});
+
+Login.Forgot = Forgot;
+Login.Reset = Reset;
+export default Login;

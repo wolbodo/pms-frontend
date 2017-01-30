@@ -13,7 +13,7 @@ export function List({ title, buttons, children }) {
     <div>
       {buttons}
       <h2>{title || 'Lijst'}</h2>
-      <Table>
+      <Table singleLine selectable striped celled>
         <Table.Header>{heads}</Table.Header>
         <Table.Body>{rows}</Table.Body>
       </Table>

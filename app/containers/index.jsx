@@ -7,7 +7,6 @@ import App from './app/app';
 import HeaderBar from './app/headerBar';
 
 import Login from './login/login';
-import PasswordReset from './login/passwordReset';
 
 export {
 	fields,
@@ -15,7 +14,6 @@ export {
 	people,
 	HeaderBar,
 	permissions,
-  PasswordReset,
 	App,
 	Login
 };

@@ -18,14 +18,14 @@ export default class Option extends React.Component {
   render() {
     const {
       value,
-      // permissions,
+      permissions,
       options,
       onChange,
       className, title
     } = this.props;
-
     return (
       <Form.Dropdown fluid search selection selectOnBlur
+        disabled={!permissions.edit}
         className={className}
         label={title}
         value={value}
