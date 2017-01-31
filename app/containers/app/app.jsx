@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Menu, Container, Dropdown } from 'semantic-ui-react';
@@ -76,11 +77,25 @@ export default class App extends React.Component {
     });
   }
 
+  renderBase(menu, main) {
+    return (
+      <div className="app">
+        {menu}
+        <Container>
+          {main}
+        </Container>
+      </div>
+    );
+  }
+
   render() {
     const { pushState, main, auth, people } = this.props;
     const { screen } = this.state;
-    const self = people.items[auth.user.user];
 
+    if (!auth.loggedIn) {
+      return this.renderBase(null, main);
+    }
+    const user = _.get(people, ['items', _.get(auth, 'user.user')], { nickname: 'User' });
     let menu;
     const size = (screen.width < 430) ? 'small' : 'normal';
     // only screen and (max-width: 767px)
@@ -92,9 +107,9 @@ export default class App extends React.Component {
             {App.globalMenu.map((item) => (
               <Dropdown.Item onClick={() => pushState(item.path)} {...item} />
             ))}
-            <Dropdown item className="item" text={self.nickname}>
+            <Dropdown item className="item" text={user.nickname}>
               <Dropdown.Menu>
-                <Dropdown.Header>{self.nickname}</Dropdown.Header>
+                <Dropdown.Header>{user.nickname}</Dropdown.Header>
                 {App.userMenu.map((item) => (
                   <Dropdown.Item onClick={() => pushState(item.path)} {...item} />
 
@@ -111,9 +126,9 @@ export default class App extends React.Component {
         .map((item) => (
           <Menu.Item onClick={() => pushState(item.path)} {...item} />
         )), (
-        <Dropdown className="right item" text={self.nickname} position="right">
+        <Dropdown key="usermenu" className="right item" text={user.nickname} position="right">
           <Dropdown.Menu>
-            <Dropdown.Header>{self.nickname}</Dropdown.Header>
+            <Dropdown.Header>{user.nickname}</Dropdown.Header>
             {App.userMenu.map((item) => (
               <Dropdown.Item onClick={() => pushState(item.path)} {...item} />
 
@@ -123,18 +138,14 @@ export default class App extends React.Component {
         )
       ];
     }
-    return (
-      <div className="app">
-        { auth.loggedIn && (
-          <Menu inverted fixed="top">
-            {menu}
-          </Menu>
-        )}
-        <Container>
-          {main}
-        </Container>
-      </div>
+
+    menu = (
+      <Menu inverted fixed="top">
+        {menu}
+      </Menu>
     );
+
+    return this.renderBase(menu, main);
   }
 }
 
