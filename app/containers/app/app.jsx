@@ -98,6 +98,16 @@ export default class App extends React.Component {
     const user = _.get(people, ['items', _.get(auth, 'user.user')], { nickname: 'User' });
     let menu;
     const size = (screen.width < 430) ? 'small' : 'normal';
+
+    const userMenu = (
+      <Dropdown.Menu>
+        {App.userMenu.map((item) => (
+          <Dropdown.Item onClick={() => pushState(item.path)} {...item} />
+
+        ))}
+      </Dropdown.Menu>
+    );
+
     // only screen and (max-width: 767px)
     if (size === 'small') {
       // Render a dropdown
@@ -107,14 +117,8 @@ export default class App extends React.Component {
             {App.globalMenu.map((item) => (
               <Dropdown.Item onClick={() => pushState(item.path)} {...item} />
             ))}
-            <Dropdown item className="item" text={user.nickname}>
-              <Dropdown.Menu>
-                <Dropdown.Header>{user.nickname}</Dropdown.Header>
-                {App.userMenu.map((item) => (
-                  <Dropdown.Item onClick={() => pushState(item.path)} {...item} />
-
-                ))}
-              </Dropdown.Menu>
+            <Dropdown item icon="user" className="item" text={user.nickname}>
+              {userMenu}
             </Dropdown>
           </Dropdown.Menu>
         </Dropdown>
@@ -126,14 +130,14 @@ export default class App extends React.Component {
         .map((item) => (
           <Menu.Item onClick={() => pushState(item.path)} {...item} />
         )), (
-        <Dropdown key="usermenu" className="right item" text={user.nickname} position="right">
-          <Dropdown.Menu>
-            <Dropdown.Header>{user.nickname}</Dropdown.Header>
-            {App.userMenu.map((item) => (
-              <Dropdown.Item onClick={() => pushState(item.path)} {...item} />
-
-            ))}
-          </Dropdown.Menu>
+        <Dropdown
+          key="usermenu"
+          className="right item"
+          text={user.nickname}
+          icon="user"
+          position="right"
+        >
+          {userMenu}
         </Dropdown>
         )
       ];

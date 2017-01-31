@@ -18,7 +18,7 @@ class ArrayField extends React.Component {
     this.state = {
       options: [
         ...props.options,
-        ...props.value.map((value) => ({ text: value, value }))
+        ...(props.value || []).map((value) => ({ text: value, value }))
       ]
     };
   }

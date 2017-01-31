@@ -383,7 +383,7 @@ export default class BaseResource {
 
       // Map create permissions on the specific resourceId.
       // if any properties defined on permissions.create, check on which type it is mapped.
-      const refPermissions = this._auth.getIn(['permissions', referenceTable, 'create']);
+      const refPermissions = this._auth.getIn(['permissions', referenceTable, 'create'], Map());
 
       // Figure out the filtering.
       const currentResource = `${this.resourceSlug}_id`;
