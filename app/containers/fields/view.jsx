@@ -205,7 +205,6 @@ class Field extends React.Component {
     this.setState({ hover: false });
   }
 
-
   render() {
     const {
       isDragging, connectDragSource, connectDropTarget,
