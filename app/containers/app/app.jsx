@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 // import * as mdl from 'react-mdl';
 // import { Link } from 'react-router';
-import { Menu, Container } from 'semantic-ui-react';
+import { Menu, Container, Dropdown } from 'semantic-ui-react';
 // Action imports
 import { push } from 'react-router-redux';
 
@@ -11,6 +11,7 @@ import logo from 'img/logo.svg'; // eslint-disable-line
 @connect(
   (state) => ({
     auth: state.get('auth').toJS(),
+    people: state.get('people').toJS(),
   }), {
     pushState: push,
   })
@@ -26,6 +27,19 @@ export default class App extends React.Component {
 
     pushState: PropTypes.func,
   }
+
+  static userMenu = [
+    { key: 'wijzig', path: '/wijzig', text: 'Wijzig gegevens' },
+    { key: 'logout', path: '/logout', text: 'Log uit' },
+  ]
+
+  static globalMenu = [
+    { key: 'mensen', path: '/mensen/member', name: 'Mensen' },
+    { key: 'velden', path: '/velden', name: 'Velden' },
+    { key: 'groepen', path: '/groepen', name: 'Groepen' },
+    { key: 'permissies', path: '/permissies', name: 'Permissies' },
+  ]
+
   constructor(props) {
     super(props);
 
@@ -46,23 +60,26 @@ export default class App extends React.Component {
   }
 
   render() {
-    const { pushState, main, auth } = this.props;
-    // const { main, header, auth } = this.props;
-    // debugger;
+    const { pushState, main, auth, people } = this.props;
+
+    const self = people.items[auth.user.user];
     return (
       <div className="app">
         { auth.loggedIn && (
-          <Menu inverted fixed="top">
-            {[
-              { key: 'mensen', path: '/mensen/member', name: 'Mensen' },
-              { key: 'wijzig', path: '/wijzig', name: 'Wijzig gegevens' },
-              { key: 'velden', path: '/velden', name: 'Velden' },
-              { key: 'groepen', path: '/groepen', name: 'Groepen' },
-              { key: 'permissies', path: '/permissies', name: 'Permissies' },
-              { key: 'logout', path: '/logout', name: 'Log uit', position: 'right' },
-            ].map((item) => (
+          <Menu inverted fixed="top" stackable>
+            {App.globalMenu.map((item) => (
               <Menu.Item onClick={() => pushState(item.path)} {...item} />
             ))}
+
+            <Dropdown className="right item" text={self.nickname} position="right">
+              <Dropdown.Menu>
+                <Dropdown.Header>{self.nickname}</Dropdown.Header>
+                {App.userMenu.map((item) => (
+                  <Dropdown.Item onClick={() => pushState(item.path)} {...item} />
+
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
           </Menu>
         )}
         <Container>
@@ -70,36 +87,6 @@ export default class App extends React.Component {
         </Container>
       </div>
     );
-    // return (
-    //   <mdl.Layout fixedHeader fixedDrawer>
-    //     <mdl.Header >
-    //       <mdl.HeaderRow>
-    //         {header}
-    //       </mdl.HeaderRow>
-    //     </mdl.Header>
-    //     <mdl.Drawer>
-    //       <header>
-    //         <img src={logo} />
-    //       </header>
-
-    //       <mdl.Navigation>
-    //         {auth.loggedIn ? [
-    //           (<Link key="mensen" to="/mensen/member">Mensen</Link>),
-    //           (<Link key="wijzig" to="/wijzig">Wijzig gegevens</Link>),
-    //           (<Link key="velden" to="/velden">Velden</Link>),
-    //           (<Link key="groepen" to="/groepen">Groepen</Link>),
-    //           (<Link key="permissies" to="/permissies">Permissies</Link>),
-    //           (<Link key="logout" to="/logout">Log uit</Link>)
-    //         ] : (
-    //           <Link to="/login">Log in</Link>
-    //         )}
-    //       </mdl.Navigation>
-    //     </mdl.Drawer>
-    //     <mdl.Content className="mdl-color--grey-100">
-    //       {main}
-    //     </mdl.Content>
-    //   </mdl.Layout>
-    // );
   }
 }
 

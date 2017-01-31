@@ -71,6 +71,7 @@ export default class PeopleView extends React.Component {
           <Row
             key={person.id}
             item={person}
+            schema={people.schema}
             fields={people.schema.header}
             edit={() => pushState(`/lid-${person.id}`)}
           />

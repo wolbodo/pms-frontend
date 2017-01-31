@@ -48,12 +48,23 @@ Head.propTypes = {
   fieldLink: PropTypes.string,
 };
 
-export function Row({ className, item, fields, edit }) {
+const displayField = (schema, item, field) => {
+  const fieldSchema = schema.properties[field];
+  const value = item[field];
+
+  switch (fieldSchema.type) {
+    case 'option':
+      return fieldSchema.options[value];
+    default:
+      return value;
+  }
+};
+export function Row({ className, item, fields, edit, schema }) {
   return (
     <Table.Row className={className} key={item.name} onClick={edit}>
       {fields.map((field, i) => (
         <Table.Cell key={i}>
-          { item[field] }
+          { displayField(schema, item, field) }
         </Table.Cell>
       ))}
     </Table.Row>
@@ -62,6 +73,7 @@ export function Row({ className, item, fields, edit }) {
 Row.propTypes = {
   className: PropTypes.string,
   item: PropTypes.object,
+  schema: PropTypes.object,
   fields: PropTypes.array,
   edit: PropTypes.func,
 };
