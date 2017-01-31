@@ -1,64 +1,57 @@
 import React, { PropTypes } from 'react';
 import { Form } from 'semantic-ui-react';
-import _ from 'lodash';
 
-export default class Array extends React.Component {
+
+class ArrayField extends React.Component {
   static propTypes = {
     name: PropTypes.string,
     title: PropTypes.string,
     value: PropTypes.array,
-    permissions: PropTypes.object,
-    options: PropTypes.array,
+    permissions: PropTypes.object.isRequired,
+    options: PropTypes.array.isRequired,
     onChange: PropTypes.func.isRequired
-  }
+  };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      value: props.value || []
+      options: [
+        ...props.options,
+        ...props.value.map((value) => ({ text: value, value }))
+      ]
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!_.isEqual(nextProps.value, this.state.value)) {
-      console.log('Updating state:', this.state.value, '->', nextProps.value);
+  handleChange(ev, { value }) {
+    this.props.onChange(value);
+  }
+  handleAddition(ev, { value }) {
+    if (!this.props.value.includes(value)) {
       this.setState({
-        value: nextProps.value || []
+        options: [{ text: value, value }, ...this.state.options],
       });
     }
   }
 
   render() {
-    const { title, onChange } = this.props;
-    const { value, currentValue } = this.state;
-    const toItem = (item) => ({ value: item, text: item });
-
-    const options = value
-                        .concat(currentValue && !value.includes(currentValue)
-                         ? [currentValue]
-                         : []
-                        )
-                        .map(toItem);
-    // const values = value.map(toItem);
-
-    console.log('Array:', options, value);
+    const { options } = this.state;
+    const { title, value = [] } = this.props;
+    const handleAddition = this.handleAddition.bind(this);
+    const handleChange = this.handleChange.bind(this);
 
     return (
-      <Form.Dropdown fluid multiple search selection selectOnBlur
+      <Form.Dropdown fluid multiple search selection
+        allowAdditions
         noResultsMessage="Typ om nieuwe items te maken"
         label={title}
         value={value}
         options={options}
-        onBlur={() => onChange(value)}
-        onChange={(ev, data) => this.setState({
-          value: data.value,
-          currentValue: undefined
-        })}
-        onSearchChange={(ev, data) => this.setState({
-          currentValue: data
-        })}
+        onAddItem={handleAddition}
+        onChange={handleChange}
       />
     );
   }
 }
+
+export default ArrayField;
