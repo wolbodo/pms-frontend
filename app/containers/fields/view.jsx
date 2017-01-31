@@ -1,10 +1,11 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import * as mdl from 'react-mdl';
 import classnames from 'classnames';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+
+import { Card } from 'semantic-ui-react';
 
 import {
   DragSource as dragSource,
@@ -18,7 +19,7 @@ import * as fieldActions from 'redux/modules/fields';
 
 const ItemTypes = {
   FIELD: Symbol('field'),
-  ROLE: Symbol('role')
+  GROUP: Symbol('group')
 };
 
 function getDragDirection(component, monitor) {
@@ -49,7 +50,7 @@ function getDragDirection(component, monitor) {
 // Index depths
 const FIELD = 2;
 const SET = 1;
-const ROLE = 0;
+const GROUP = 0;
 
 /**
  * Implements the drag source contract.
@@ -72,7 +73,7 @@ const fieldTarget = {
     const direction = getDragDirection(component, monitor);
 
     if ( // were working on the same fieldset
-      (item.index[ROLE] === props.index[ROLE])
+      (item.index[GROUP] === props.index[GROUP])
        &&
       (item.index[SET] === props.index[SET])
        &&
@@ -97,7 +98,7 @@ const fieldTarget = {
     const toIndex = props.index;
 
     if ( // were working on the same fieldset
-      (item.index[ROLE] === props.index[ROLE])
+      (item.index[GROUP] === props.index[GROUP])
        &&
       (item.index[SET] === props.index[SET])
        &&
@@ -151,13 +152,13 @@ const fieldSetTarget = {
   }
 };
 
-// const rolesource = {
+// const groupsource = {
 //   beginDrag(props) {
 //     index: props.index
 //   }
 // }
 
-const roleTarget = {
+const groupTarget = {
 };
 
 
@@ -274,9 +275,9 @@ class FieldSet extends React.Component {
   }
 }
 
-// @dragSource(ItemTypes.ROLE, rolesource, sourceCollect)
-@dropTarget(ItemTypes.FIELD, roleTarget, targetCollect)
-class Role extends React.Component {
+// @dragSource(ItemTypes.GROUP, groupsource, sourceCollect)
+@dropTarget(ItemTypes.FIELD, groupTarget, targetCollect)
+class Group extends React.Component {
   static propTypes = {
     // connectDragSource: PropTypes.func.isRequired,
     // isDragging: PropTypes.bool.isRequired,
@@ -314,14 +315,10 @@ class Role extends React.Component {
     const { fieldsets } = this.state;
 
     return connectDropTarget(
-      <div>
-        <mdl.Card
-          className={classnames('role', 'mdl-color--white', 'mdl-shadow--2dp', { hover: isOver })}
-        >
-          <mdl.CardTitle>
-          { title }
-          </mdl.CardTitle>
-          <mdl.CardText>
+      <div className={classnames('ui', 'card', { hover: isOver })}>
+        <Card.Content>
+          <Card.Header>{title}</Card.Header>
+          <Card.Description>
           { _.map(fieldsets, (fieldset, i) =>
             <FieldSet
               fields={fieldset}
@@ -333,9 +330,10 @@ class Role extends React.Component {
               index={[index, i]}
             />
           )}
-          </mdl.CardText>
-        </mdl.Card>
-        </div>);
+          </Card.Description>
+        </Card.Content>
+      </div>
+    );
   }
 }
 
@@ -374,26 +372,23 @@ export default class FieldsView extends React.Component {
   render() {
     const { fields, params } = this.props;
     console.log('View params', params);
-
-    // TODO: Fix editing multiple tables, for now, just edit people.
     const table = params.resource || 'people';
 
-    // <mdl.CardTitle>Alle velden</mdl.CardTitle>
     return (
-      <div className="content fieldsview">
-      { _.map(fields.items[table].form, (role, i) =>
-        <Role
+      <Card.Group className="fields-view">
+      { _.map(fields.items[table].form, (group, i) =>
+        <Group
           key={i}
           index={i}
           getFieldURI={(name) => `/velden/${table}/${name}`}
           moveField={this.moveField}
           schema={fields.items[table]}
           addSet={this.addSet}
-          title={role.title}
-          fieldsets={role.fields}
+          title={group.title}
+          fieldsets={group.fields}
         />
       )}
-      </div>
+      </Card.Group>
     );
   }
 }
