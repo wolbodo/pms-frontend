@@ -6,12 +6,19 @@ import { push } from 'react-router-redux';
 
 import logo from 'img/logo.svg'; // eslint-disable-line
 
+import * as peopleActions from 'redux/modules/people';
+import * as rolesActions from 'redux/modules/roles';
+import * as fieldsActions from 'redux/modules/fields';
+
 @connect(
   (state) => ({
     auth: state.get('auth').toJS(),
     people: state.get('people').toJS(),
   }), {
     pushState: push,
+    peopleFetch: peopleActions.fetch,
+    rolesFetch: rolesActions.fetch,
+    fieldsFetch: fieldsActions.fetch,
   })
 export default class App extends React.Component {
   static propTypes = {
@@ -24,6 +31,9 @@ export default class App extends React.Component {
     roles: PropTypes.object,
 
     pushState: PropTypes.func,
+    peopleFetch: PropTypes.func,
+    rolesFetch: PropTypes.func,
+    fieldsFetch: PropTypes.func,
   }
 
   static userMenu = [
@@ -32,10 +42,10 @@ export default class App extends React.Component {
   ]
 
   static globalMenu = [
-    { key: 'mensen', path: '/mensen/member', text: 'Mensen' },
-    { key: 'velden', path: '/velden/people', text: 'Velden' },
-    { key: 'groepen', path: '/groepen', text: 'Groepen' },
-    { key: 'permissies', path: '/permissies', text: 'Permissies' },
+    { key: 'mensen', path: '/mensen/member', text: 'Mensen', active: '/mensen' },
+    { key: 'velden', path: '/velden/people', text: 'Velden', active: '/velden' },
+    { key: 'groepen', path: '/groepen', text: 'Groepen', active: '/groepen' },
+    { key: 'permissies', path: '/permissies', text: 'Permissies', active: '/permissies' },
   ]
 
   constructor(props) {
@@ -89,7 +99,10 @@ export default class App extends React.Component {
   }
 
   render() {
-    const { pushState, main, auth, people } = this.props;
+    const {
+      pushState, main, auth, people,
+      peopleFetch, rolesFetch, fieldsFetch,
+    } = this.props;
     const { screen } = this.state;
 
     if (!auth.loggedIn) {
@@ -115,7 +128,11 @@ export default class App extends React.Component {
         <Dropdown item className="item" text="Menu" inverted>
           <Dropdown.Menu className="inverted menu" vertical>
             {App.globalMenu.map((item) => (
-              <Dropdown.Item onClick={() => pushState(item.path)} {...item} />
+              <Dropdown.Item
+                {...item}
+                active={location.pathname.startsWith(item.active)}
+                onClick={() => pushState(item.path)}
+              />
             ))}
             <Dropdown item icon="user" className="item" text={user.nickname}>
               {userMenu}
@@ -128,8 +145,21 @@ export default class App extends React.Component {
         App.globalMenu
         .map((item) => ({ ...item, name: item.text }))
         .map((item) => (
-          <Menu.Item onClick={() => pushState(item.path)} {...item} />
+          <Menu.Item
+            {...item}
+            active={location.pathname.startsWith(item.active)}
+            onClick={() => pushState(item.path)}
+          />
         )), (
+        <Menu.Item key="refresh"
+          name="Refresh"
+          onClick={() => {
+            peopleFetch();
+            rolesFetch();
+            fieldsFetch();
+          }}
+        />
+        ), (
         <Dropdown
           key="usermenu"
           className="right item"

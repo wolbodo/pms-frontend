@@ -47,7 +47,9 @@ export default class ItemEdit extends React.Component {
     const form = mapFilter(
       resource.schema.form,
       (formGroup) => ({
-        title: formGroup.title,
+        title: formGroup.title.startsWith('@') ?
+               _.get(item, formGroup.title.substr(1), formGroup.title) :
+               formGroup.title,
         fields: mapFilter(
           formGroup.fields,
           (fieldset) => mapFilter(fieldset, this.createField.bind(this), (field) => !!field),
